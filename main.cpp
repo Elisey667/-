@@ -1,9 +1,32 @@
 #include <iostream>
 #include <random>
-
+#include <thread>
+#include <chrono>
 using namespace std;
+int count = 0;
+bool EndGame = false;
+void timer() {
+    int i = 0;
+    while (true)
+    {
+        this_thread::sleep_for(chrono::milliseconds(1));
+        if (EndGame == false) {
+            if (i == 1000) {
+                count++;
+                i = 0;
+            }
+            else {
+                i++;
+            }
+        }
+        else {
+            break;
+        }
 
+    }
+}
 int main() {
+    thread Timer(timer);
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> dist(1, 100);
@@ -30,7 +53,10 @@ int main() {
             else if (input_number == Number) {
                 attempts++;
                 cout<<"Ты угадал!"<<endl;
+                EndGame = true;
                 cout<<"Ваши попытки:" << attempts<<endl;
+                Timer.join();
+                cout<<"Ваше примерное итоговое время:" << count<<endl;
                 break;
             }
         }
@@ -49,8 +75,11 @@ int main() {
             }
             else if (input_number == Number) {
                 attempts++;
+                EndGame = true;
                 cout<<"you guessed it!"<<endl;
                 cout<<"Your attempts:"<<attempts<<endl;
+                Timer.join();
+                cout<<"your approximate final time:"<<count<<endl;
                 break;
             }
         }
